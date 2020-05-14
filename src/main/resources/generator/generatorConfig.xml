@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration 
+	PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" 
+	"http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<!-- MyBatis代码自动生成器配置 -->
+<generatorConfiguration>
+	<!-- 在MyBatis Generator工作的时候，使用命令提示符运行时需要额外加载的依赖包，location属性指明加载jar/zip包的全路径， -->
+	<!-- <classPathEntry location="mysql-connector-java-5.1.38.jar"/> -->
+	
+	<!-- 在MyBatis Generator工作的时候，使用Eclipse插件运行时需要额外加载的依赖包 -->
+	<!-- <classPathEntry location="D:\softWareInstall\eclipseNeon\eclipse-jee-neon-3-win32-x86_64\eclipse\jarTools\mysql-connector-java-5.1.38.jar"/> -->
+	
+	<!-- 
+		id:上下文id，用于在生成错误是提示。
+		targetRuntime：设置为MyBatis3Simple，主要是为了避免生成与Example相关的代码和方法，如果需要Example相关的代码，也可设置为MyBatis3，
+		可选值有MyBatis3|MyBatis3Simple|MyBatis3Kotlin|MyBatis3DynamicSql。
+		defaultModelType：设置为flat，使每个表只生成一个实体类，当没有复杂的类继承时，使用起来方便，可选值有flat|conditional|hierarchial；
+	 -->
+	 
+	<context id="MySqlContext" targetRuntime="MyBatis3Simple" defaultModelType="flat">
+		<property name="beginningDelimiter" value="`"/><!-- 使用的MySql数据库，前后分隔符使用的都是"`"，这个分隔符用于标记数据库对象名的符号，Oracle用的是双引号 -->
+		<property name="endingDelimiter" value="`"/>
+		<!-- <property name="javaFileEncoding" value="UTF-8"/> -->
+		
+		<!-- commentGenerator：配置了生成的源文件中的注释信息，不抑制日期的生成、添加注释-->
+		<commentGenerator>
+			<property name="suppressDate" value="false"/>
+			<property name="addRemarkComments" value="true"/>
+		</commentGenerator>
+		
+		<!-- 配置数据库连接信息 -->
+		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
+						connectionURL="jdbc:mysql://localhost:3306/mybatis"
+						userId="root"
+						password="123456"/>
+		
+		<!-- 
+			javaModelGenerator：配置生成java pojo存放的位置。 
+			targetPackage：生成的类要放的包，真实的包受enableSubPackages属性控制。
+			targetProject：目标项目，指定一个存在的目录下，生成的内容会放到指定目录中，如果目录不存在，MBG不会自动建目录。
+		-->
+		<javaModelGenerator targetPackage="test.model"
+							targetProject="src/main/java">
+			<!-- 在targetPackage的基础上，根据数据库的schema再生成一层package，最终生成的类放在这个package下，默认为false -->
+        	<property name="enableSubPackages" value="false"/>
+        	<!-- 设置是否在getter方法中，对String类型字段调用trim()方法 -->
+			<property name="trimStrings" value="true"/>
+			<!-- immutable设置为true的话，model中的field不会生成setter方法，field值的设置通过constructor完成 -->
+			<property name="immutable" value="false"/>
+		</javaModelGenerator>
+		
+		<!-- 
+			sqlMapGenerator：配置生成的Mapper.xml文件的位置。 
+		-->
+		<sqlMapGenerator targetPackage="test.xml"
+						 targetProject="src/main/resources"/>
+		
+		<!-- 
+			javaClientGenerator：配置生成Mapper接口的位置。
+		 -->
+		<javaClientGenerator type="XMLMAPPER" 
+							 targetPackage="test.dao"
+							 targetProject="src/main/java"/>
+							
+		<!-- 
+			table：选择一个table来生成相关文件，可以有一个或多个table，必须要有table元素，选择的table会生成一下文件：
+	        1.SQL map文件
+	        2.Mapper接口（可选）。
+	        3.生成一个主键类；
+	        4.除了BLOB和主键的其他字段的类；
+	        5.包含BLOB的类；
+	        6.一个用户生成动态查询的条件类（selectByExample, deleteByExample），可选；
+			tableName：使用通配符“%”匹配数据库中所有的表。
+			enableSelectByPrimaryKey(默认true)：指定是否生成按照主键查询对象的语句（就是selectByPrimaryKey）。
+			delimitAllColumns(默认false)：设置是否所有生成的SQL中的列名都使用标识符引起来，delimitIdentifiers参考context的属性。
+		 --> 
+		<table tableName="%" enableSelectByPrimaryKey="true" delimitAllColumns="false">
+			<!-- 所有表都有主键自增的id字段， sqlStatement针对当前数据库配置MySQL -->
+			<generatedKey column="id" sqlStatement="MySql" identity="true" type="post"/>
+		</table>
+	</context>
+</generatorConfiguration>

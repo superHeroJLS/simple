@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+		PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<settings>
+		<setting name="logImpl" value="LOG4J"></setting>
+		<!-- 
+			指定MyBatis应如何自动映射列到字段或属性：
+			NONE 表示取消自动映射；
+			PARTIAL(默认) 只会自动映射没有定义嵌套结果集映射的结果集。 
+			FULL 会自动映射任意复杂的结果集（无论是否嵌套）
+		-->
+		<setting name="autoMappingBehavior" value="PARTIAL"/>
+		<!-- 
+			全局属性mapUnderscoreToCamelCase ，通过配置这个属性为true(默认为false)可以自动将以下画线方式命名的数据库列映射到Java对象的驼峰式命名属性中 
+			例如：数据库表中列名user_name，Java对象的属性名userName。
+		-->
+		<setting name="mapUnderscoreToCamelCase" value="false"/>
+		<!-- 设置为true任意延迟属性的调用会使带有延迟加载属性的对象完整加载，反之false，每种属性都将按需加载。 -->
+		<setting name="aggressiveLazyLoading" value="false"/>
+		<!-- 己经将aggressiveLazyLoading设置为false，但是有些时候还是需要在触发某方法时将所有的懒加载的数据都加载进来，可以使用下面这个属性 -->
+		<setting name="lazyLoadTriggerMethods" value="equals"/>
+	</settings>
+	
+	
+	<typeAliases>
+		<package name="tk.mybatis.simple.model"/>
+	</typeAliases>
+	
+	<environments default="development">
+		<environment id="development">
+			<transactionManager type="JDBC">
+				<property name="" value=""/>
+			</transactionManager>
+			<dataSource type="UNPOOLED">
+				<property name="driver" value="com.mysql.jdbc.Driver"/>
+				<property name="url" value="jdbc:mysql://localhost:3306/mybatis?useSSL=false"/>
+				<property name="username" value="root"/>
+				<property name="password" value="123456"/>
+			</dataSource>
+		</environment>
+	</environments>
+	
+	<!-- 设置数据库厂商，DB_VENDOR会通过DatabaseMetaData#g etDatabaseProductName()返回的字符串进行设置;
+		 通常情况下这个字符串都非常长而且相同产品的不同版本会返回不同，的值，所以通常会通过设置属性别名来使其变短。 -->
+	<databaseIdProvider type="DB_VENDOR">
+		<!-- 有property 配置时， databaseid将被设置为第一个能匹配数据库产品名称的属性键对应的值， 如果没有匹配的属性则会被设置为null -->
+		<!-- getDatabaseProductName （）返回Microsoft SQL Server, databaseid将被设置为sqlserver -->
+		<property name="SQL Server" value="sqlserver"/>
+		<property name =" DB2 " value= " db2 " />
+		<property name= " Oracle " value = " oracle " />
+		<property name="MySQL " value="mysql "/>
+		<property name= " PostgreSQL" value= " postgresql " />
+		<property name=" Derby " value =" derby " />
+		<property name = " HSQL " value= " h sqldb " />
+		<property name = "H2" value =" h2 " />
+	</databaseIdProvider>
+	
+	<mappers>
+		<!-- 使用mapper标签需要将所有的Mapper.xml文件一一列举出来，这种方式太麻烦 ；可以使用package标签，写法更加简便-->
+		<!-- <mapper resource="tk/mybatis/simple/mapper/CountryMapper.xml"></mapper>
+		<mapper resource="tk/mybatis/simple/mapper/CountryMapper2.xml"></mapper>
+		<mapper resource="tk/mybatis/simple/mapper/UserMapper.xml"></mapper>
+		<mapper resource="tk/mybatis/simple/mapper/RoleMapper.xml"></mapper>
+		<mapper resource="tk/mybatis/simple/mapper/UserRoleMapper.xml"></mapper>
+		<mapper resource="tk/mybatis/simple/mapper/PrivilegeMapper.xml"></mapper>
+		<mapper resource="tk/mybatis/simple/mapper/RolePrivilegeMapper.xml"></mapper> -->
+		
+		<!-- 
+			使用package标签加载指定java包下所有Mapper接口对应的Mapper.xml文件，具体加载步骤：
+			1. 判断接口对应的namespace是否己经存在，如果存在就抛出异常，不存在就继续进行接下来的操作。
+			2. 加载接口对应的Mapper.xml映射文件， 将接口全限定名转换为路径， 例如， 将接口tk.mybatis.simple.mapper.UserMapper 
+			转换为tk/mybatis/simple/mapper/UserMapper.xml,以.xml为后缀搜索XML资源，如果找到就解析XML。
+			3. 处理接口中的注解方法，如果接口中没有注解方法就不用处理。
+		-->
+		<package name="tk.mybatis.simple.mapper"/>
+		
+	</mappers>
+	
+</configuration>
