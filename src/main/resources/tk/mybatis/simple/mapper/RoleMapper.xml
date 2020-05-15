@@ -58,7 +58,7 @@
 			r.create_time,
 			p.id privilege_id,
 			p.privilege_name privilege_privilege_name,
-			p.privilege_uri privilege_privilege_uri
+			p.privilege_url privilege_privilege_url
 		from sys_role r
 		inner join sys_role_privilege rp on r.id = rp.role_id
 		inner join sys_privilege p on p.id = rp.privilege_id

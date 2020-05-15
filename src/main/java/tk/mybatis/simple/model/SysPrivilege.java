@@ -3,7 +3,7 @@ package tk.mybatis.simple.model;
 public class SysPrivilege {
 	private Long id;
 	private String privilegeName;
-	private String PrivilegeUri;
+	private String PrivilegeUrl;
 	public Long getId() {
 		return id;
 	}
@@ -16,11 +16,11 @@ public class SysPrivilege {
 	public void setPrivilegeName(String privilegeName) {
 		this.privilegeName = privilegeName;
 	}
-	public String getPrivilegeUri() {
-		return PrivilegeUri;
+	public String getPrivilegeUrl() {
+		return PrivilegeUrl;
 	}
-	public void setPrivilegeUri(String privilegeUri) {
-		PrivilegeUri = privilegeUri;
+	public void setPrivilegeUrl(String privilegeUrl) {
+		PrivilegeUrl = privilegeUrl;
 	}
 	
 }

@@ -7,7 +7,7 @@
 	<resultMap id="privilegeMap" type="SysPrivilege">
 		<id property="id" column="id"/>
 		<result property="privilegeName" column="privilege_name"/>
-		<result property="privilegeUri" column="privilege_uri"/>
+		<result property="privilegeUrl" column="privilege_url"/>
 	</resultMap>
 	
 	<select id="selectAllCopy3" resultType="SysPrivilege">
@@ -18,7 +18,7 @@
 		select 
 			p.id,
 			p.privilege_name,
-			p.privilege_uri
+			p.privilege_url
 		from sys_privilege p
 		inner join sys_role_privilege rp on p.id = rp.privilege_id
 		where rp.role_id = #{roleId}
