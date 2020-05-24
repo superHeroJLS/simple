@@ -18,6 +18,7 @@ import tk.mybatis.simple.model.SysPrivilege;
 import tk.mybatis.simple.model.SysRole;
 import tk.mybatis.simple.model.SysRoleExtend;
 import tk.mybatis.simple.model.SysUser;
+import tk.mybatis.simple.type.Enabled;
 
 public class UserMapperTest extends BaseMapperTest{
 	
@@ -844,6 +845,7 @@ public class UserMapperTest extends BaseMapperTest{
 		}
 	}
 	
+	@Ignore
 	@Test
 	public void testSelectAllUserAndRoleListSelect() {
 		SqlSession sqlSession = getSqlSession();
@@ -863,6 +865,72 @@ public class UserMapperTest extends BaseMapperTest{
 			}
 		} finally {
 			sqlSession.close();
+		}
+	}
+	
+	@Ignore
+	@Test
+	public void testSelectUserByIdWithProcedure() {
+		SqlSession sqlSession = getSqlSession();
+		try {
+			
+			UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+			SysUser user= new SysUser();
+			user.setId(1016L);
+			userMapper.selectUserByIdWithProcedure(user);
+			Assert.assertNotNull(user.getUserName());
+			System.out.println("用户名： " + user.getUserName());
+			System.out.println(user);
+		} finally {
+			sqlSession.close();
+		}
+	}
+	
+	@Ignore
+	@Test
+	public void testSelectUserPage() {
+		SqlSession sqlSession = getSqlSession();
+		try {
+			
+			UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+			Map<String, Object> params = new HashMap<String, Object>();
+			params.put("userName", "ad");
+			params.put("offset", 0);
+			params.put("limit", 10);
+			params.put("total", 0L);
+			List<SysUser> users = userMapper.selectUserPageWithProcedure(params);
+			System.out.println("total: " + (Long) params.get("total"));
+			for (SysUser user : users) {
+				System.out.println(user);
+			}
+		} finally {
+			sqlSession.close();
+		}
+	}
+	
+	@Test
+	public void testInsertUserAndRolesWithProcedure() {
+		SqlSession sqlSession = getSqlSession() ;
+		try {
+			UserMapper userMapper = sqlSession.getMapper(UserMapper.class) ;
+			SysUser user= new SysUser();
+			user.setUserName("test") ;
+			user.setUserPassword("123456");
+			user.setUserEmail("test@mybatis.tk");
+			user.setUserInfo("userInfo");
+			user.setHeadImg(new byte[]{1,2,3});
+			//插入用户信息和角色关联信息
+			userMapper.insertUserAndRolesWithProcedure(user, "1,2");
+			Assert.assertNotNull(user.getId());
+			Assert.assertNotNull(user.getCreateTime());
+			
+			//可以执行下面的commit 后再查看数据库中的数据
+			sqlSession.commit();
+			//测试删除刚刚插入的数据
+			userMapper.deleteUserByIdWithProcedure(user.getId());
+		} finally {
+			sqlSession.commit();//记得commit，否则delete语句不会生效
+			sqlSession.close( );
 		}
 	}
 	

@@ -9,6 +9,8 @@ import org.junit.Test;
 
 import tk.mybatis.simple.model.SysPrivilege;
 import tk.mybatis.simple.model.SysRole;
+import tk.mybatis.simple.model.SysRoleUseEnum;
+import tk.mybatis.simple.type.Enabled;
 
 public class RoleMapperTest extends BaseMapperTest {
 	
@@ -32,6 +34,7 @@ public class RoleMapperTest extends BaseMapperTest {
 		}
 	}
 
+	@Ignore
 	@Test
 	public void testSelectRoleByUserIdChoose() {
 		SqlSession sqlSession = getSqlSession();
@@ -49,12 +52,13 @@ public class RoleMapperTest extends BaseMapperTest {
 					//存在权限信息
 					Assert.assertNotNull(r.getPrivilegeList());
 				} else if (r.getId().equals(2L)) {
+					//no privilege infomation
 					Assert.assertNull(r.getPrivilegeList());
-					System.out.println("-----no privilege");
+					System.err.println("error-----" + r.getRoleName() + " no privilege");
 	 				continue;
 				}
 				for (SysPrivilege privilege : r.getPrivilegeList()) {
-					System.out.println("privilegeName: " + privilege.getPrivilegeName());
+					System.out.println("roleName: " + r.getRoleName() + " ,privilegeName: " + privilege.getPrivilegeName());
 				}
 			}
 		} finally {
@@ -62,5 +66,28 @@ public class RoleMapperTest extends BaseMapperTest {
 			sqlSession.close();
 		}
 	}
+	
+	@Test
+	public void testSelectRoleByIdUseEnum() {
+		SqlSession sqlSession = getSqlSession() ;
+		try {
+			RoleMapper roleMapper = sqlSession.getMapper(RoleMapper.class) ;
+			//先查询出角色，然后修改角色的enabled 值为disabled
+			SysRoleUseEnum role = roleMapper.selectRoleByIdUseEnum(2L);
+			System.out.println("before: " + role);
+			Assert.assertEquals(Enabled.enabled, role.getEnabled());
+			
+			role.setEnabled(Enabled.disabled) ;
+			roleMapper.updateByIdUseEnum(role);
+			
+			SysRoleUseEnum roleAfter = roleMapper.selectRoleByIdUseEnum(2L);
+			System.out.println("after: " + roleAfter);
+		} finally {
+			sqlSession.rollback();
+			sqlSession.close() ;
+		}
+	}
+	
+	
 	
 }

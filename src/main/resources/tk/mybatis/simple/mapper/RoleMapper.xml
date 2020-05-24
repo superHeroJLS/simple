@@ -31,6 +31,16 @@
 		</discriminator>
 	</resultMap>
 	
+	<!-- enabled使用了枚举类型 -->
+	<resultMap id="roleUseEnumMap" type="tk.mybatis.simple.model.SysRoleUseEnum">
+		<id property="id" column ="id"/>
+		<result property="roleName" column= "role_name"/>
+		<!-- <result property="enabled" column ="enabled" typeHandler="org.apache.ibatis.type.EnumOrdinalTypeHandler"/> -->
+		<result property="enabled" column ="enabled" typeHandler="tk.mybatis.simple.type.EnabledTypeHandler"/>
+		<result property="createBy" column="create_by"/>
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+	</resultMap>
+	
 	<select id="selectAllCopy2" resultType="SysRole">
 		select * from sys_role
 	</select>
@@ -89,5 +99,20 @@
 		where
 			rp.user_id = #{userId}
 	</select>
+	
+	<select id="selectRoleByIdUseEnum" resultMap="roleUseEnumMap">
+		select * from sys_role where id = #{id}
+	</select>
+	
+	<update id="updateByIdUseEnum">
+		update sys_role
+		<set>
+			<if test="enabled != null">
+				<!-- enabled = #{enabled, typeHandler=org.apache.ibatis.type.EnumOrdinalTypeHandler}, -->
+				enabled = #{enabled, typeHandler=tk.mybatis.simple.type.EnabledTypeHandler},
+			</if>
+		</set>
+		where id = #{id}
+	</update>
 		
 </mapper>

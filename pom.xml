@@ -44,6 +44,11 @@
   		<artifactId>log4j</artifactId>
   		<version>1.2.17</version>
   	</dependency>
+  	<dependency>
+  		<groupId>org.mybatis</groupId>
+		<artifactId>mybatis-typehandlers-jsr310</artifactId>
+		<version>1.0.2</version>
+  	</dependency>
   </dependencies>
   <!-- <build>
   	<pluginManagement>

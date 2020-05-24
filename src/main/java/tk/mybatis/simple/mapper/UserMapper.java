@@ -178,7 +178,39 @@ public interface UserMapper {
 	 */
 	List<SysUser> selectAllUserAndRoleListSelect();
 	
+	/**
+	 * 这个存储过程没有返回值，数据通过OUT参数设置到了user中
+	 * 
+	 * @param user
+	 * @return
+	 */
+	void selectUserByIdWithProcedure(SysUser user);
 	
+	/**
+	 * 使用存储过程实现分页查询
+	 * 
+	 * @param userName
+	 * @param offset
+	 * @param limit
+	 * @param total
+	 * @return
+	 */
+	List<SysUser> selectUserPageWithProcedure(Map<String, Object> params);
+	
+	/**
+	 * 使用存储过程保存用户信息和角色关联信息
+	 * @param user
+	 * @param roleIds
+	 * @return
+	 */
+	int insertUserAndRolesWithProcedure(@Param("user")SysUser user, @Param("roleIds")String roleIds);
+	
+	/**
+	 * 使用存储过程根据用户id 删除用户和用户的角色信息
+	 * @param id
+	 * @return
+	 */
+	int deleteUserByIdWithProcedure(Long id);
 }
 
 

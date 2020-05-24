@@ -28,6 +28,20 @@
 		<package name="tk.mybatis.simple.model"/>
 	</typeAliases>
 	
+	<typeHandlers>
+		<!-- 对Java8 日期类型(JSR-310 ） 的支持 -->
+		<typeHandler handler="org.apache.ibatis.type.InstantTypeHandler"/>
+		<typeHandler handler="org.apache.ibatis.type.LocalDateTypeHandler"/>
+		<typeHandler handler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/>
+		<typeHandler handler="org.apache.ibatis.type.LocalTimeTypeHandler"/>
+		<typeHandler handler="org.apache.ibatis.type.OffsetTimeTypeHandler"/>
+		<typeHandler handler="org.apache.ibatis.type.OffsetDateTimeTypeHandler"/>
+		<typeHandler handler="org.apache.ibatis.type.ZonedDateTimeTypeHandler"/>
+		<typeHandler handler="org.apache.ibatis.type.YearTypeHandler"/>
+		<typeHandler handler="org.apache.ibatis.type.MonthTypeHandler"/>
+	</typeHandlers>
+	
+	
 	<environments default="development">
 		<environment id="development">
 			<transactionManager type="JDBC">

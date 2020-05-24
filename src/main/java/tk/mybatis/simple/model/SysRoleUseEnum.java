@@ -3,10 +3,12 @@ package tk.mybatis.simple.model;
 import java.util.Date;
 import java.util.List;
 
-public class SysRole {
+import tk.mybatis.simple.type.Enabled;
+
+public class SysRoleUseEnum {
 	private Long id;
 	private String roleName;
-	private Integer enabled;
+	private Enabled enabled;
 	private Long createBy;
 	private Date createTime;
 	private SysUser user;
@@ -23,13 +25,13 @@ public class SysRole {
 	public void setRoleName(String roleName) {
 		this.roleName = roleName;
 	}
-	public Integer getEnabled() {
+	
+	public Enabled getEnabled() {
 		return enabled;
 	}
-	public void setEnabled(Integer enabled) {
+	public void setEnabled(Enabled enabled) {
 		this.enabled = enabled;
 	}
-	
 	public Long getCreateBy() {
 		return createBy;
 	}
@@ -51,8 +53,8 @@ public class SysRole {
 	}
 	@Override
 	public String toString() {
-		return "SysRole [id=" + id + ", roleName=" + roleName + ", enabled=" + enabled + ", createBy=" + createBy
-				+ ", createTime=" + createTime + ", user=" + user + "]";
+		return "SysRoleUseEnum [id=" + id + ", roleName=" + roleName + ", enabled=" + enabled + ", createBy=" + createBy
+				+ ", createTime=" + createTime + ", user=" + user + ", privilegeList=" + privilegeList + "]";
 	}
 	
 	
