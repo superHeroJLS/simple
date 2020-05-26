@@ -12,6 +12,11 @@
 		readOnly="true"
 	/> -->
 	
+	<!-- 
+		ehcache作为MyBatis二级缓存 
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>
+	-->
+	
 	<resultMap id="userMap" type="tk.mybatis.simple.model.SysUser">
 		<id property="id" column ="id"/>
 		<result property="userName" column= "user_name"/>

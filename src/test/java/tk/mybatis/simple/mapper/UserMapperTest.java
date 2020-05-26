@@ -942,7 +942,6 @@ public class UserMapperTest extends BaseMapperTest{
 	 * </ol>
 	 * 
 	 */
-	@Ignore
 	@Test
 	public void testL1Cache() {
 		SqlSession sqlSession = getSqlSession();
@@ -969,7 +968,7 @@ public class UserMapperTest extends BaseMapperTest{
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			sqlSession.close();
+			sqlSession.close();//关闭sqlSession
 		}
 		
 		//打开一个新的sqlSession

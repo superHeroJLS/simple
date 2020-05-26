@@ -1,5 +1,6 @@
 package tk.mybatis.simple.model;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -8,7 +9,9 @@ import java.util.List;
  * 手动创建的POJO，后续可以通过MyBatis官方提供的工具<b>MyBatis Generator(MBG)根据数据库表的信息自动生成POJO。</b>
  * @author jls
  */
-public class SysUser {
+public class SysUser implements Serializable{
+	private static final long serialVersionUID = -8527710336125335834L;
+	
 	private Long id;
 	private String userName;
 	private String userPassword;

@@ -18,7 +18,12 @@
       maxElementsInMemory:缓存最大数目
       maxElementsOnDisk：硬盘最大缓存个数。
       eternal:对象是否永久有效，一但设置了，timeout将不起作用。
-      overflowToDisk:是否保存到磁盘，当系统当机时
+      copyOnRead：
+      	判断从缓存中读取数据时是返回对象的引用还是复制一个对象返回。默认情况下是false ，即返回数据的引用，这种情况下返回的都是相同的对象，
+      	和MyBatis默认缓存中的只读对象(readOnly)是相同的。如果设置为true ，那就是可读写缓存，每次读取缓存时都会复制一个新的实例。
+      copyOnWrite：
+      	判断写入缓存时是直接缓存对象的引用还是复制一个对象然后缓存，默认也是false 。如果想使用可读写缓存，就需要将这两个属性配置为true ，
+      	如果使用只读缓存，可以不配置这两个属性，使用默认值false 即可。
       timeToLiveSeconds:
       	设置对象在失效前允许存活时间（单位：秒）。仅当eternal=false对象不是永久有效时使用，默认是0，也就是对象存活时间无穷大；
       	当对象自从被存放到缓存中后，如果处于缓存中的时间超过了 timeToLiveSeconds属性值,这个对象就会过期，EHCache将把它从缓存中清除；
@@ -26,15 +31,19 @@
       timeToIdleSeconds:
       	设置对象在失效前的允许闲置时间（单位：秒）。仅当eternal=false对象不是永久有效时使用，可选属性，默认值是0，也就是可闲置时间无穷大。
       	当对象自从最近一次被访问后，如果处于空闲状态的时间超过了timeToIdleSeconds属性值，这个对象就会过期，EHCache将把它从缓存中清空。
-      diskPersistent：是否缓存虚拟机重启期数据 Whether the disk store persists between restarts of the Virtual Machine. The default value is false.
+      overflowToDisk：
+      	当内存中Element数量达到maxElementsInMemory时，Ehcache将会Element写到磁盘中。
+      diskPersistent：
+      	虚拟机重启期是否缓存数据至磁盘。（Server重启时将缓存序列化到本地，重启后再加载，保证缓存在重启后依然有效）。
       diskSpoolBufferSizeMB：这个参数设置DiskStore（磁盘缓存）的缓存区大小。默认是30MB。每个Cache都应该有自己的一个缓冲区。
       diskExpiryThreadIntervalSeconds：磁盘失效线程运行时间间隔，默认是120秒。
-      memoryStoreEvictionPolicy：当达到maxElementsInMemory限制时，Ehcache将会根据指定的策略去清理内存。默认策略是LRU（最近最少使用）。你可以设置为FIFO（先进先出）或是LFU（较少使用）。
       clearOnFlush：内存数量最大时是否清除。
-      memoryStoreEvictionPolicy:可选策略有：LRU（最近最少使用，默认策略）、FIFO（先进先出）、LFU（最少访问次数）。
-      FIFO，first in first out，这个是大家最熟的，先进先出。
-      LFU， Less Frequently Used，就是上面例子中使用的策略，直白一点就是讲一直以来最少被使用的。如上面所讲，缓存的元素有一个hit属性，hit值最小的将会被清出缓存。
-      LRU，Least Recently Used，最近最少使用的，缓存的元素有一个时间戳，当缓存容量满了，而又需要腾出地方来缓存新的元素的时候，那么现有缓存元素中时间戳离当前时间最远的元素将被清出缓存。
+      memoryStoreEvictionPolicy：
+      	当达到maxElementsInMemory限制时，Ehcache将会根据指定的策略去清理内存中的缓存。默认策略是LRU（最近最少使用）。你可以设置为FIFO（先进先出）或是LFU（较少使用）。
+		可选策略有：LRU（最近最少使用，默认策略）、FIFO（先进先出）、LFU（最少访问次数）：
+      	FIFO，first in first out，这个是大家最熟的，先进先出。
+      	LFU， Less Frequently Used，就是上面例子中使用的策略，直白一点就是讲一直以来最少被使用的。如上面所讲，缓存的元素有一个hit属性，hit值最小的将会被清出缓存。
+      	LRU，Least Recently Used，最近最少使用的，缓存的元素有一个时间戳，当缓存容量满了，而又需要腾出地方来缓存新的元素的时候，那么现有缓存元素中时间戳离当前时间最远的元素将被清出缓存。
    -->
     <defaultCache
             maxElementsInMemory="3000"
@@ -48,8 +57,8 @@
             memoryStoreEvictionPolicy="LRU"/>
   
   	<!-- 
-  		所以配置使用EhCache缓存的Mapper映射文件都会有一个以映射文件命名空间命名的缓存。如果想针对某一个命名空间进行配置，
-  		需要在ehcache.xml 中添加一个和映射文件命名空间一致的缓存配置，例如针对RoleMapper ， 可以进行如下配置。
+  		配置使用EhCache缓存的Mapper映射文件都会有一个以映射文件命名空间命名的缓存。如果想针对某一个命名空间进行配置，
+  		需要在ehcache.xml 中添加一个和映射文件命名空间一致的缓存配置，例如针对RoleMapper.java， 可以进行如下配置。
   	 -->
     <cache
             name="tk.mybatis.simple.mapper.RoleMapper"
@@ -62,5 +71,21 @@
             overflowToDisk="true"
             diskPersistent="true"
             memoryStoreEvictionPolicy="LRU"/>
+  	 
+  	 <!-- <cache
+            name="test"
+            maxElementsInMemory="3000"
+            eternal="false"
+            copyOnRead="true"
+            copyOnWrite="true"
+            timeToLiveSeconds="7200"
+            timeToIdleSeconds="3600"
+            overflowToDisk="true"
+            diskPersistent="true"
+            memoryStoreEvictionPolicy="LRU"/> -->
+  	 
+  	 <!-- <BootstrapCacheLoaderFactory 
+  	 	class="net.sf.ehcache.store.DiskStoreBootstrapCacheLoaderFactory" 
+  	 	properties="bootstrapAsynchronously=true" /> -->
   
 </ehcache>
