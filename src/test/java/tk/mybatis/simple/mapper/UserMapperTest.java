@@ -18,7 +18,6 @@ import tk.mybatis.simple.model.SysPrivilege;
 import tk.mybatis.simple.model.SysRole;
 import tk.mybatis.simple.model.SysRoleExtend;
 import tk.mybatis.simple.model.SysUser;
-import tk.mybatis.simple.type.Enabled;
 
 public class UserMapperTest extends BaseMapperTest{
 	
@@ -908,11 +907,12 @@ public class UserMapperTest extends BaseMapperTest{
 		}
 	}
 	
+	@Ignore
 	@Test
 	public void testInsertUserAndRolesWithProcedure() {
 		SqlSession sqlSession = getSqlSession() ;
 		try {
-			UserMapper userMapper = sqlSession.getMapper(UserMapper.class) ;
+			UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
 			SysUser user= new SysUser();
 			user.setUserName("test") ;
 			user.setUserPassword("123456");
@@ -931,6 +931,71 @@ public class UserMapperTest extends BaseMapperTest{
 		} finally {
 			sqlSession.commit();//记得commit，否则delete语句不会生效
 			sqlSession.close( );
+		}
+	}
+	
+	/**
+	 * <ol>
+	 * 测试MyBatis一级缓存（也叫sqlSession缓存、本地缓存）：
+	 * 	<li>一级缓存默认启用，且不能控制。</li>
+	 * 	<li>一级缓存存在sqlSession的生命周期中</li>
+	 * </ol>
+	 * 
+	 */
+	@Ignore
+	@Test
+	public void testL1Cache() {
+		SqlSession sqlSession = getSqlSession();
+		SysUser user1 = null;
+		
+		try {
+			
+			UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+			//第一次查
+			user1 = userMapper.selectById(1L);
+			user1.setUserName("new name");
+			
+			/**
+			 * 第二次查，其实查询的是一级缓存(sqlSession缓存)中的内容
+			 * 
+			 * 不想让selectById方法使用一级缓存，可以对该方法做如下修改：
+			 * 	Mapper.xml文件中对应方法增加属性flushCache="true"，即每次查询前清空一级缓存
+			 */
+			SysUser user2 = userMapper.selectById(1L);
+			Assert.assertEquals("new name", user2.getUserName());
+			Assert.assertEquals(user1, user2);
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			sqlSession.close();
+		}
+		
+		//打开一个新的sqlSession
+		System.err.println("open new sqlSession");
+		sqlSession = getSqlSession();
+		
+		try {
+			
+			UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+			//使用新的sqlSession查，查询的数据库中的内容
+			SysUser user2 = userMapper.selectById(1L);
+			Assert.assertNotEquals("new name", user2.getUserName());
+			Assert.assertNotEquals(user1, user2);
+			
+			//执行删除操作
+			userMapper.deleteById(2L);
+			
+			//使用新的sqlSession第二次查询，查询的数据库而不是缓存，原因是因为执行create/update/delete操作一级缓存会被清空
+			SysUser user3 = userMapper.selectById(1L);
+			Assert.assertNotEquals(user2, user3);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			sqlSession.rollback();
+			sqlSession.close();
 		}
 	}
 	
