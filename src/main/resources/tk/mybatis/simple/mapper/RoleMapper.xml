@@ -81,11 +81,30 @@
 		select * from sys_role
 	</select>
 
-	<update id="updateById">
+	<update id="updateEnabledById">
 		update sys_role
 		<set>
 			<if test="enabled != null">
 				enabled = #{enabled},
+			</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<update id="updateById">
+		update sys_role
+		<set>
+			<if test="roleName != null">
+				role_name = #{roleName},
+			</if>
+			<if test="enabled != null">
+				enabled = #{enabled},
+			</if>
+			<if test="createBy != null">
+				create_by = #{createBy},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime},
 			</if>
 		</set>
 		where id = #{id}

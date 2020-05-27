@@ -936,7 +936,7 @@ public class UserMapperTest extends BaseMapperTest{
 	
 	/**
 	 * <ol>
-	 * 测试MyBatis一级缓存（也叫sqlSession缓存、本地缓存）：
+	 * 测试MyBatis一级缓存（也叫sqlSession缓存、本地缓存），<b>这个时候需要将MyBatis的二级缓存关闭才能测出效果</b>：
 	 * 	<li>一级缓存默认启用，且不能控制。</li>
 	 * 	<li>一级缓存存在sqlSession的生命周期中</li>
 	 * </ol>

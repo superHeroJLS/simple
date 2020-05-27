@@ -12,6 +12,8 @@ public interface RoleMapper {
 
 	List<SysRole> selectAllCopy2();
 	
+	int updateEnabledById(SysRole role);
+	
 	int updateById(SysRole role);
 	
 	SysRole selectRoleById(Long id);
