@@ -1,6 +1,7 @@
 package tk.mybatis.simple.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.CacheNamespaceRef;
 
@@ -17,6 +18,8 @@ public interface RoleMapper {
 	int updateById(SysRole role);
 	
 	SysRole selectRoleById(Long id);
+	
+	Map selectRoleByIdReturnMap(Long id);
 	
 	/**
 	 * 查询所有的role和privilege，role和privilege的关系是一对多

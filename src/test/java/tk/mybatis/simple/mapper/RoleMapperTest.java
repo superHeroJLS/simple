@@ -1,6 +1,7 @@
 package tk.mybatis.simple.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.junit.Assert;
@@ -221,6 +222,7 @@ public class RoleMapperTest extends BaseMapperTest {
 	 * </br>修改为参照缓存后，再次执行测试，这时就会发现在第二次查询用户和关联角色信息时并没有使用二级缓存，而是重新从数据库获取了数据。虽然这样可以解决脏数据的问题，但是并
 	 * 不是所有的关联查询都可以这么解决，如果有几十个表甚至所有表都以不同的关联关系存在于各自的映射文件中时，使用参照缓存显然没有意义。
 	 */
+	@Ignore
 	@Test
 	public void testDirtyDate() {
 		SqlSession sqlSession = getSqlSession();
@@ -278,6 +280,24 @@ public class RoleMapperTest extends BaseMapperTest {
 		}
 		
 		
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testLowerCamelInterceptor() {
+		SqlSession sqlSession = getSqlSession();
+		try {
+			RoleMapper roleMapper = sqlSession.getMapper(RoleMapper.class);
+			Map<String, Object> role = roleMapper.selectRoleByIdReturnMap(1L);
+			for (String key : role.keySet()) {
+				System.out.println(key + "-" + role.get(key));
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			sqlSession.close();
+		}
 	}
 	
 	

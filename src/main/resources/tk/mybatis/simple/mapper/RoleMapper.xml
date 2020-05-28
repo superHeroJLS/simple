@@ -114,6 +114,10 @@
 		select * from sys_role where id = #{id}
 	</select>
 	
+	<select id="selectRoleByIdReturnMap" resultType="java.util.Map">
+		select * from sys_role where id = #{id}
+	</select>
+	
 	<select id="selectAllRoleAndPrivilegeList" resultMap="rolePrivilegeListMap">
 		select 
 			r.id,

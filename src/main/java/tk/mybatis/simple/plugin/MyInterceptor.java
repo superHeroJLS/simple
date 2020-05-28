@@ -31,7 +31,7 @@ public class MyInterceptor implements Interceptor {
 		Object target = invocation.getTarget();//获取被拦截的对象
 		Method method = invocation.getMethod();//获取当前被拦截的方法
 		Object[] args = invocation.getArgs();//获取被拦截方法中的参数
-		System.err.println("-----intercept method is called-----");
+		System.err.println("-----MyIntercept method is called-----");
 		Object result = invocation.proceed();//执行当前被拦截的方法，实际执行了method.invoke(target, args)
 		return result;
 	}

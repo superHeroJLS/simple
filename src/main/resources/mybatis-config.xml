@@ -58,6 +58,7 @@
 		<plugin interceptor="tk.mybatis.simple.plugin.MyInterceptor">
 			<property name="field" value="value"/>
 		</plugin>
+		<plugin interceptor="tk.mybatis.simple.plugin.LowerCamelInterceptor"/>
 	</plugins>
 	
 	<environments default="development">
