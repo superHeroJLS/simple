@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.CacheNamespaceRef;
 import tk.mybatis.simple.model.SysRole;
 import tk.mybatis.simple.model.SysRoleUseEnum;
 
-@CacheNamespaceRef(RoleMapper.class)//配置MyBatis二级缓存参照，直接参照RoleMapper.xml中配置好的MyBatis二级缓存
+//@CacheNamespaceRef(RoleMapper.class)//配置MyBatis二级缓存参照，直接参照RoleMapper.xml中配置好的MyBatis二级缓存
 public interface RoleMapper {
 
 	List<SysRole> selectAllCopy2();

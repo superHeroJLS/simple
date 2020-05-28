@@ -37,8 +37,8 @@
 	
 	<!-- 
 		redis二级缓存：
-	-->
 	<cache type="org.mybatis.caches.redis.RedisCache"/>
+	-->
 
 	<resultMap id="roleMap" type="tk.mybatis.simple.model.SysRole">
 		<id property="id" column ="id"/>
@@ -95,7 +95,7 @@
 		update sys_role
 		<set>
 			<if test="roleName != null">
-				role_name = #{roleName},
+				role_name = #{roleName, jdbcType=VARCHAR},
 			</if>
 			<if test="enabled != null">
 				enabled = #{enabled},

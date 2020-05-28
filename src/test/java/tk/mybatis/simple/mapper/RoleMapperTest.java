@@ -244,7 +244,7 @@ public class RoleMapperTest extends BaseMapperTest {
 			//更新ID为2的角色信息
 			RoleMapper roleMapper = sqlSession.getMapper(RoleMapper.class);
 			SysRole role = roleMapper.selectRoleById(2L);
-			role.setRoleName("脏数据");
+			role.setRoleName("test");
 			roleMapper.updateById(role);
 			sqlSession.commit();
 			
@@ -262,8 +262,8 @@ public class RoleMapperTest extends BaseMapperTest {
 			RoleMapper roleMapper = sqlSession.getMapper(RoleMapper.class);
 			SysUser user = userMapper.selectUserAndRoleById(1001L);
 			SysRole role = roleMapper.selectRoleById(2L);
-			Assert.assertEquals("普通用户", user.getRole().getRoleName());
-			Assert.assertEquals("脏数据", role.getRoleName());
+			Assert.assertEquals("test", user.getRole().getRoleName());
+			Assert.assertEquals("test", role.getRoleName());
 			System.out.println("用户-角色名：" + user.getRole().getRoleName());
 			
 			//还原数据

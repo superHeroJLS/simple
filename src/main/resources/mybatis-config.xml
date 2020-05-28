@@ -3,6 +3,7 @@
 		PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 		"http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
+	<properties resource="db.properties"/>
 	<settings>
 		<setting name="logImpl" value="LOG4J"></setting>
 		
@@ -30,7 +31,7 @@
 			MyBatis二级缓存配置（sqlSessionFactory缓存）的全局开关，默认为true，若配置为false则二级缓存不被启用；
 			二级缓存适合命名空间绑定的，即二级缓存需要配置在Mapper.xml或Mapper.java中
 		-->
-		<setting name="cacheEnabled" value="true"/>
+		<setting name="cacheEnabled" value="false"/>
 		
 	</settings>
 	
@@ -52,6 +53,12 @@
 		<typeHandler handler="org.apache.ibatis.type.MonthTypeHandler"/>
 	</typeHandlers>
 	
+	<plugins>
+		<!-- 配置拦截器 -->
+		<plugin interceptor="tk.mybatis.simple.plugin.MyInterceptor">
+			<property name="field" value="value"/>
+		</plugin>
+	</plugins>
 	
 	<environments default="development">
 		<environment id="development">
@@ -59,10 +66,10 @@
 				<property name="" value=""/>
 			</transactionManager>
 			<dataSource type="UNPOOLED">
-				<property name="driver" value="com.mysql.jdbc.Driver"/>
-				<property name="url" value="jdbc:mysql://localhost:3306/mybatis?useSSL=false"/>
-				<property name="username" value="root"/>
-				<property name="password" value="123456"/>
+				<property name="driver" value="${driver}"/>
+				<property name="url" value="${url}"/>
+				<property name="username" value="${username}"/>
+				<property name="password" value="${password}"/>
 			</dataSource>
 		</environment>
 	</environments>
