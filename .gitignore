@@ -9,4 +9,5 @@ bin/
 
 # IDEA #
 .idea/
+*.iml
 
