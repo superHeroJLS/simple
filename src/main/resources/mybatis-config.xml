@@ -21,7 +21,7 @@
 		-->
 		<setting name="mapUnderscoreToCamelCase" value="false"/>
 		
-		<!-- 设置为true任意延迟属性的调用会使带有延迟加载属性的对象完整加载，反之false，每种属性都将按需加载。 -->
+		<!-- 设置为true任意延迟属性的调用会使带有延迟加载属性的对象完整加载，反之false，每种属性都将按需加载（aggressive：侵略性的，积极的）。 -->
 		<setting name="aggressiveLazyLoading" value="false"/>
 		
 		<!-- 己经将aggressiveLazyLoading设置为false，但是有些时候还是需要在触发某方法时将所有的懒加载的数据都加载进来，可以使用下面这个属性 -->
@@ -31,7 +31,7 @@
 			MyBatis二级缓存配置（sqlSessionFactory缓存）的全局开关，默认为true，若配置为false则二级缓存不被启用；
 			二级缓存适合命名空间绑定的，即二级缓存需要配置在Mapper.xml或Mapper.java中
 		-->
-		<setting name="cacheEnabled" value="false"/>
+		<setting name="cacheEnabled" value="true"/>
 		
 	</settings>
 	
