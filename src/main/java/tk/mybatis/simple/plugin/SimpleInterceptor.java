@@ -10,16 +10,16 @@ import org.apache.ibatis.plugin.Intercepts;
 import org.apache.ibatis.plugin.Invocation;
 import org.apache.ibatis.plugin.Plugin;
 import org.apache.ibatis.plugin.Signature;
+import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 
 @Intercepts(
-			@Signature(type=Executor.class,
-				method="query",
-				args={MappedStatement.class, Object.class, RowBounds.class, ResultSetHandler.class}
+			@Signature(type = Executor.class,
+				method = "query",
+				args = {MappedStatement.class, Object.class, RowBounds.class, ResultHandler.class}
 					)
 		)
 public class SimpleInterceptor implements Interceptor {
-	@SuppressWarnings("unused")
 	private String name;
 	
 	public SimpleInterceptor(String name) {
