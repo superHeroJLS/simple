@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.ibatis.binding.MapperProxyFactory;
 import org.apache.ibatis.builder.StaticSqlSource;
 import org.apache.ibatis.cache.Cache;
 import org.apache.ibatis.cache.decorators.LoggingCache;
@@ -23,6 +24,8 @@ import org.apache.ibatis.mapping.SqlCommandType;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.defaults.DefaultSqlSession;
 import org.apache.ibatis.transaction.Transaction;
 import org.apache.ibatis.transaction.jdbc.JdbcTransaction;
 import org.apache.ibatis.type.TypeHandlerRegistry;
@@ -136,7 +139,7 @@ public class SimpleTest {
          */
      // 第2个参数就是这个sql语句的唯一id，相当于在xml和接口模式下namespace和id的组合，但是这里的id不需要和xml+接口中的方法匹配，只要取一个唯一的id就行
         MappedStatement.Builder msBuilder = new MappedStatement.Builder(config, 
-        		"tk.mybatis.simple.mapper.SimpleMapper.selectById", 
+        		"tk.mybatis.simple.mapper.SimpleMapper.selectCountryById", 
         		sqlSource, 
         		SqlCommandType.SELECT);
         List<ResultMap> resultMaps = new ArrayList<>();
@@ -149,17 +152,50 @@ public class SimpleTest {
         
         /**
          * 第10步：有了封装sql的MappedStatement和执行sql的Executo，就可以执行sql语句了。
-         * 执行上面的方法便可以得到查询的结果。当使用MyBatis时， 项目启动后就已经准备好了所有方法对应的MappedStatement对象。
-         * 在执行MyBatis的数据库操作时，底层就是通过调用Executor相应的方法来执行
+         * 执行下面的方法便可以得到查询的结果。当使用MyBatis时， 项目启动后就已经准备好了所有方法对应的MappedStatement对象。
+         * 在执行MyBatis的数据库操作时，底层就是通过调用Executor相应的方法来执行。
          */
-        // 第3个参数是MyBatis内存分页参数，DEFAULT表示查询全部不用分页；第4个参数大多数情况下都是null，MyBatis本身的结果映射已经做得很好了，设置为null可以使用默认的结果映射处理器。
-        List<Country> countries = exe.query(ms, 1L, RowBounds.DEFAULT, null);
-        System.out.println(countries.get(0));
+        // 第2个参数是查询参数；第3个参数是MyBatis内存分页参数，DEFAULT表示查询全部不用分页；第4个参数大多数情况下都是null，MyBatis本身的结果映射已经做得很好了，设置为null可以使用默认的结果映射处理器。
+//        List<Country> countries = exe.query(ms, 1L, RowBounds.DEFAULT, null);
+//        System.out.println(countries.get(0));
+        
+        /**
+         * 第11步：第10步中使用Executor执行并不方便，因此可以再提高一个层次，将上面的操作封装起来，使查询者更方便调用。
+         * 先将MappedStatement添加到Configuration中，在Configuration中会以Map的形式记录，其中Map的key就是MappedStatement的id，
+         * 这样就可以很方便地通过id从Configuration中获取MappedStatement了，在使用完整id 保存的同时，还会尝试使用“．”分割最后的字符串（通常是方法名）作为key 井保存一份。
+         * 如果key 已经存在，就会标记该key有歧义，这种情况下若通过短的key调用就会因为有歧义而抛出异常。
+         */
+        config.addMappedStatement(ms);
+        SqlSession sqlSession = new DefaultSqlSession(config, exe, false);
+        Country country = sqlSession.selectOne("selectCountryById", 1L);// 通过方法名作为key调用mappedStatement
+//        Country country = sqlSession.selectOne("tk.mybatis.simple.mapper.SimpleMapper.selectCountryById", 1L);// 也可通过完整的id作为key调用mappedStatement
+        System.out.println(country);
+        
+        /**
+         * 第12步：后来就有人将第11步的这种调用方式封装为DAO和DAOImpl，在DAOImpl中实现第11步，但是这种方法比较麻烦且工作量比较大，故逐渐被淘汰
+         */
+        
+        /**
+         * 第13步：再后来，MyBatis使用JDK动态代理解决了解决了DAO接口实现类的问题，使得我们使用起来更加方便且不用再去实现一个DAOImpl。
+         * 基于这个，我们还可以在提高一个层次，使用动态代理的方式实现接口调用：
+         * 1. 创建Mapper接口，SimplerMapper。
+         * 2. 创建代理接口，并且调用查询方法。
+         */
+        MapperProxyFactory<SimpleMapper> mapperProxyFactory = new MapperProxyFactory<>(SimpleMapper.class);
+        //创建代理接口，动态代理工厂类创建动态接口时传入了参数SqlSession ，这是对SqlSession更高层次的封装，从上面的方法调用也能看出使用接口是多么方便。
+        SimpleMapper simpleMapper = mapperProxyFactory.newInstance(sqlSession);
+        Country country1 = simpleMapper.selectCountryById(1L);
+        System.out.println(country1);
+        
+        /**
+         * 总结：MyBatis 底层的层层封装包含了很多细节，在使用时并不需要了解封装的具体过程， 只要能够直接利用接口方式去执行各种各样的方法即可。
+         * 阅读MyBatis 的源码可以学到很多东西，如缓存的装饰模式、大量Builder 类的建造者模式、拦截器的代理链调用等。
+         * 这一节的内容虽然尽可能涵盖MyBatis 的方方面面，但是仍然有很多细节隐藏在各个步骤的实现类中没有单独说明，比如MyBatis 将ResultSet 映射到对象中的方法，
+         * 再比如处理复杂的关联查询以及关联查询结果的映射的方法等，因此MyBaits 中还有很多需要我们深入学习的内容。
+         */
         
         
-        
-        
-		}
+	}
 	
 	
 	
