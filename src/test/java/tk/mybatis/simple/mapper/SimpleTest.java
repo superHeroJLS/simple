@@ -142,7 +142,7 @@ public class SimpleTest {
         		"tk.mybatis.simple.mapper.SimpleMapper.selectCountryById", 
         		sqlSource, 
         		SqlCommandType.SELECT);
-        List<ResultMap> resultMaps = new ArrayList<>();
+        List<ResultMap> resultMaps = new ArrayList<ResultMap>();
         resultMaps.add(rm);
         
         msBuilder.parameterMap(paramBuilder.build());
